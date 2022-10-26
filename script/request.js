@@ -1,6 +1,6 @@
 var tmdbid = 24;
 
-const send = () => {
+const send = async () => {
 
     const options = {
     method: 'GET',
@@ -12,6 +12,26 @@ const send = () => {
     }
     };
 
+    const result = await axios.request(options).then(function (response) {
+        var available = [];
+        Object.entries(response.data.streamingInfo).map(
+            (object)=> { 
+                if (object[1].gb.leaving > 0) {
+                    available.push({platform: object[0], link: object[1].gb.link})
+                }
+            } 
+        )
+        return available
+    }).catch(function (error) {
+        console.error(error);
+    });
+    
+    return result
+
 }
 
-send()
+//106646 - wolf
+// 393 - kill bill 2
+// 24 - kill bill 1
+
+// send(24).then((res)=> console.log(res, "lol"))
