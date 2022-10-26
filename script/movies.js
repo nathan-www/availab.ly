@@ -3,7 +3,7 @@ class Movies {
     apiKey = '1c6c391489739f8b1c4822c55184344c'
 
 
-    async getTrending(timeWindow) {
+    static async getTrending(timeWindow) {
         // timeWindow is either 'day' or 'week'
         const route = `trending/movie/${timeWindow}`
         
@@ -16,7 +16,7 @@ class Movies {
  
     }
 
-    async searchByName(name) {
+    static async searchByName(name) {
         const route = 'search/movie'
         const queryParams = { query: name }
 
@@ -28,7 +28,7 @@ class Movies {
         }
     }
 
-    async searchByKeywords(keywords) {
+    static async searchByKeywords(keywords) {
         let route = 'search/keyword'
         const keywordIds = await Promise.all(
             keywords.map(keyword => this.queryApi(route, { query: keyword })
@@ -48,7 +48,7 @@ class Movies {
         }
     }
 
-    async queryApi(route, queryParams) {
+    static async queryApi(route, queryParams) {
         const endpoint = new URL(route, this.baseURL)
         endpoint.searchParams.set('api_key', this.apiKey)
 
@@ -64,5 +64,5 @@ class Movies {
 
 }
 
-// const movies = new Movies()
-// console.log(movies.searchByKeywords(['horror', 'happy', 'sadfff']))
+
+// console.log(Movies.searchByKeywords(['horror', 'happy', 'sadfff']))
