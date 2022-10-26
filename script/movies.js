@@ -1,6 +1,6 @@
 class Movies {
-    baseURL = 'https://api.themoviedb.org/3/'
-    apiKey = '1c6c391489739f8b1c4822c55184344c'
+    static baseURL = 'https://api.themoviedb.org/3/'
+    static apiKey = '1c6c391489739f8b1c4822c55184344c'
 
 
     static async getTrending(timeWindow) {
@@ -8,7 +8,7 @@ class Movies {
         const route = `trending/movie/${timeWindow}`
         
         try {
-            const data = await this.queryApi(route)
+            const data = await Movies.queryApi(route)
             return { data, error: false }
         } catch (e) {
             return { data: null, error: true }
@@ -21,7 +21,7 @@ class Movies {
         const queryParams = { query: name }
 
         try {
-            const data = await this.queryApi(route, queryParams)
+            const data = await Movies.queryApi(route, queryParams)
             return { data, error: false }
         } catch (e) {
             return { data: null, error: true }
@@ -30,18 +30,23 @@ class Movies {
 
     static async searchByKeywords(keywords) {
         let route = 'search/keyword'
-        const keywordIds = await Promise.all(
-            keywords.map(keyword => this.queryApi(route, { query: keyword })
+        let keywordIds = await Promise.all(
+            keywords.map(keyword => Movies.queryApi(route, { query: keyword })
             .then(json => {
                 if (json['results'].length)
                     return json['results'][0]['id']
             })
         ))
         
+        //Get rid of the result of invalid keywords
+        keywordIds = keywordIds.filter(keywordId => keywordId !== undefined)
+        
+
         route = 'discover/movie'
-        const queryParams = {with_keywords: keywordIds.join('&')}
+        const queryParams = {with_keywords: keywordIds.join(',')}
+        
         try {
-            const data = await this.queryApi(route, queryParams)
+            const data = await Movies.queryApi(route, queryParams)
             return { data, error: false }
         } catch (e) {
             return { data: null, error: true }
@@ -49,8 +54,8 @@ class Movies {
     }
 
     static async queryApi(route, queryParams) {
-        const endpoint = new URL(route, this.baseURL)
-        endpoint.searchParams.set('api_key', this.apiKey)
+        const endpoint = new URL(route, Movies.baseURL)
+        endpoint.searchParams.set('api_key', Movies.apiKey)
 
         if (queryParams) {
             for (let [param, value] of Object.entries(queryParams))
@@ -59,10 +64,12 @@ class Movies {
         
         const response = await fetch(endpoint)
         const json = await response.json()
+        if (json.success === false)
+            throw new Error()
         return json
     }
 
 }
 
-
-// console.log(Movies.searchByKeywords(['horror', 'happy', 'sadfff']))
+// console.log(Movies.getTrending())
+// console.log(Movies.searchByKeywords(['horror', 'sad']))
