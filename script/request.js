@@ -15,17 +15,17 @@ const send = async () => {
     const result = await axios.request(options).then(function (response) {
         var available = [];
         Object.entries(response.data.streamingInfo).map(
-            (object)=> { 
+            (object)=> {
                 if (object[1].gb.leaving > 0) {
                     available.push({platform: object[0], link: object[1].gb.link})
                 }
-            } 
+            }
         )
         return available
     }).catch(function (error) {
         console.error(error);
     });
-    
+
     return result
 
 }
