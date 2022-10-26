@@ -1,6 +1,4 @@
-var tmdbid = 24;
-
-const send = async () => {
+const send = async (tmdbid) => {
 
     const options = {
     method: 'GET',
@@ -12,7 +10,7 @@ const send = async () => {
     }
     };
 
-    const result = await axios.request(options).then(function (response) {
+    return axios.request(options).then(function (response) {
         var available = [];
         Object.entries(response.data.streamingInfo).map(
             (object)=> {
