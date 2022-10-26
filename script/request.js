@@ -1,4 +1,3 @@
-const axios = require("axios");
 var tmdbid = 24;
 
 const send = () => {
