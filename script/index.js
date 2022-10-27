@@ -103,7 +103,9 @@ createApp({
                         }
                     }
 
-                    this.streaming_availability[tmdb_id] = availability;
+                    this.pause(800).then(() => {
+                        this.streaming_availability[tmdb_id] = availability;
+                    })
 
                 })
             }

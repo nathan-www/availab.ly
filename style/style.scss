@@ -211,8 +211,16 @@ body{
                 }
             }
 
-            .stream-buttons{
+            .stream-options-section{
                 margin-top: 12px;
+
+                h5{
+                    margin-top: 25px;
+                    margin-bottom: 10px;
+                    color: #fff;
+                    font-weight: 400;
+                    color: $black-20;
+                }
             }
 
             &.fullheight{
@@ -282,6 +290,7 @@ body{
     color: $black-100;
     font-weight: 500;
     margin-bottom: 10px;
+    font-size: 15px;
 
     p{
         margin-left: 4px;
@@ -309,9 +318,15 @@ body{
     }
 }
 
-p.streaming-unavailable{
+.streaming-unavailable{
     font-size: 12px;
     color: $black-30;
     text-align: center;
     margin-top: 30px;
+    margin: 0px 10px;
+
+    img.inline-icon{
+        font-size: 1.8em;
+        margin-bottom: 4px;
+    }
 }

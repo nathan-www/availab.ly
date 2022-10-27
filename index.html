@@ -91,24 +91,51 @@
 
                                     <h3 class="description">{{ movie.description }}</h3>
 
-                                    <div class="stream-buttons" v-if="!streaming_availability.hasOwnProperty(movie.tmdb_id)">
-                                        <img src="assets/loader-white.png" alt="" class="inline-icon loader">
-                                    </div>
+                                    <img v-if="!streaming_availability.hasOwnProperty(movie.tmdb_id)" src="assets/loader-white.png" alt="" class="inline-icon loader">
 
-                                    <div class="stream-buttons" v-else-if="streaming_availability[movie.tmdb_id].length > 0">
-                                        <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]" @click="openLinkNewTab(service.link)">
-                                            <div class="v-center">
-                                                <img src="assets/play.svg" alt="" class="inline-icon">
+                                    <template v-else>
+
+                                        <div class="stream-options-section">
+                                            <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]['stream']" @click="openLinkNewTab(streaming_availability[movie.tmdb_id].link)">
+                                                <div class="v-center">
+                                                    <img src="assets/play.svg" alt="" class="inline-icon">
+                                                </div>
+                                                <div class="v-center">
+                                                    <p>Stream on {{ service.name }}</p>
+                                                </div>
                                             </div>
-                                            <div class="v-center">
-                                                <p>Stream on {{ service.platform }}</p>
+
+                                            <div class="streaming-unavailable" v-if="streaming_availability[movie.tmdb_id]['stream'].length == 0">
+                                                <img src="assets/frown.svg" alt="" class="inline-icon">
+                                                <p>No streaming services available in your country</p>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="stream-options-section">
+                                            <h5>Alternative options</h5>
+
+                                            <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]['rent']" @click="openLinkNewTab(streaming_availability[movie.tmdb_id].link)">
+                                                <div class="v-center">
+                                                    <img src="assets/dollar-sign.svg" alt="" class="inline-icon">
+                                                </div>
+                                                <div class="v-center">
+                                                    <p>Rent on {{ service.name }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]['buy']" @click="openLinkNewTab(streaming_availability[movie.tmdb_id].link)">
+                                                <div class="v-center">
+                                                    <img src="assets/dollar-sign.svg" alt="" class="inline-icon">
+                                                </div>
+                                                <div class="v-center">
+                                                    <p>Buy on {{ service.name }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="stream-buttons" v-else>
-                                        <p class="streaming-unavailable">Could not find any streaming services</p>
-                                    </div>
+
+                                    </template>
+
 
                                 </div>
                             </div>
