@@ -63,9 +63,8 @@ class Movies {
         }
         
         const response = await fetch(endpoint)
-        
         const json = await response.json()
-        console.log(json)
+   
         if (json.success === false)
             throw new Error()
         return json
