@@ -63,13 +63,23 @@ class Movies {
         }
         
         const response = await fetch(endpoint)
+        
         const json = await response.json()
+        console.log(json)
         if (json.success === false)
             throw new Error()
         return json
     }
 
+    static async getProviders(movieId) {
+        const route = `movie/${movieId}/watch/providers`
+
+        try {
+            const data = await Movies.queryApi(route)
+            return { data, error: false }
+        } catch (e) {
+            return { data: null, error: true }
+        }
+    }
 }
 
-// console.log(Movies.getTrending())
-// console.log(Movies.searchByKeywords(['horror', 'sad']))
