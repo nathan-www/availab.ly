@@ -8,20 +8,7 @@ createApp({
         trending_movies: [], // { name, tmdb_id, release_year, rating, description backdrop_img, poster_img}
         streaming_availability: {}, // tmdb_id: [{ platform, link }]
 
-        platforms: {
-            all4: "All 4",
-            apple: "Apple TV",
-            britbox: "BritBox",
-            curiosity: "Curiosity",
-            disney: "Disney",
-            hotstar: "Hotstar",
-            iplayer: "BBC iPlayer",
-            mubi: "Mubi",
-            netflix: "Netflix",
-            now: "NOW",
-            prime: "Amazon Prime",
-            zee5: "ZEE5"
-        },
+        user_country: "GB",
 
         search_text: "",
 
@@ -73,24 +60,54 @@ createApp({
 
         },
 
+        tmbdProviderResult: function(res){
+            return {
+                name: res.provider_name,
+                logo: 'https://image.tmdb.org/t/p/original' + res.logo_path
+            }
+        },
+
         getStreamingAvailability: function(tmdb_id){
 
             if(!this.streaming_availability.hasOwnProperty(tmdb_id)){
-                send(tmdb_id).then((res) => {
-                    this.pause(500).then(() => {
-                        this.streaming_availability[tmdb_id] = res;
-                    });
+                Movies.getProviders(tmdb_id).then((res) => {
 
-                    console.log("Got streaming availability for: " + tmdb_id);
-                    console.log(res);
-                    console.log("===");
+                    let results = res.data.results;
+                    let availability;
 
-                }).catch(() => {
-                    this.pause(500).then(() => {
-                        this.streaming_availability[tmdb_id] = [];
-                    });
-                });
+                    if(!results.hasOwnProperty(this.user_country)){
+                        availability = {
+                            link: null,
+                            stream: [],
+                            rent: [],
+                            buy: []
+                        }
+                    } else {
+                        let localResults = results[this.user_country];
+
+                        availability = {
+                            link: localResults.link,
+                            stream: [],
+                            rent: [],
+                            buy: []
+                        }
+
+                        if(localResults.hasOwnProperty('flatrate')){
+                            availability.stream = localResults['flatrate'].map((p) => this.tmbdProviderResult(p));
+                        }
+                        if(localResults.hasOwnProperty('rent')){
+                            availability.rent = localResults['rent'].map((p) => this.tmbdProviderResult(p));
+                        }
+                        if(localResults.hasOwnProperty('buy')){
+                            availability.buy = localResults['buy'].map((p) => this.tmbdProviderResult(p));
+                        }
+                    }
+
+                    this.streaming_availability[tmdb_id] = availability;
+
+                })
             }
+
         },
 
         pause: function(ms){
