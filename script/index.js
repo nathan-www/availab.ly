@@ -25,7 +25,7 @@ createApp({
 
         search_text: "",
 
-        active_movie: 1
+        active_movie: null
 
       }
     },
@@ -45,6 +45,7 @@ createApp({
         },
 
         search: function(ev){
+            this.active_movie = null;
             this.search_text = ev.target.value;
             this.searchMovies(this.search_text);
         },
