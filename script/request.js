@@ -9,22 +9,22 @@ const send = async (tmdbid) => {
         'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
     }
     };
-    
+
     var available = [];
     /// returns promise with result
     return axios.request(options).then(function (response) {
         console.log(response.data.streamingInfo)
         Object.entries(response.data.streamingInfo).map(
-            (object)=> { 
+            (object)=> {
                 if (object[1].gb.leaving > 0) {
                     available.push({platform: object[0], link: object[1].gb.link})
                 }
-            } 
+            }
         )
         return available
     }).catch(function (error) {
         console.error(error);
         return available
     });
-    
+
 }
