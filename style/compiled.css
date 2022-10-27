@@ -29,7 +29,7 @@ body {
 }
 
 .logo-icon {
-  height: 50px;
+  height: 100px;
   user-select: none;
 }
 
@@ -74,13 +74,14 @@ body {
   user-select: none;
 }
 
-.movie-card-container {
+.movie-cards-container {
   max-width: 1800px;
+  margin: 0px auto;
 }
 
 .movie-cards {
-  width: 80vw;
   flex-wrap: wrap;
+  justify-content: center;
   width: 100%;
 }
 .movie-cards .movie-card {
