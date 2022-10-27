@@ -11,18 +11,21 @@ const send = async (tmdbid) => {
     }
     };
     
+    var available = [];
     /// returns promise with result
     var available = [];
     return axios.request(options).then(function (response) {
         Object.entries(response.data.streamingInfo).map(
             (object)=> { 
-                available.push({platform: object[0], link: object[1].gb.link})
+                if (object[1].gb.leaving > 0) {
+                    available.push({platform: object[0], link: object[1].gb.link})
+                }
             } 
         )
         return available
     }).catch((err)=> {
         return available
-    })
+    });
     
 }
 

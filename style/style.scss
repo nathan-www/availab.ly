@@ -11,6 +11,8 @@ $black-15: #EDEDED;
 $black-10: #F6F6F6;
 $black-00: #FFFFFF;
 
+$movie-card-transition: 0.85s;
+
 *{
     margin: 0px;
     box-sizing: border-box;
@@ -52,7 +54,13 @@ body{
     font-size: 50px;
     font-weight: 500;
     user-select: none;
+    margin-bottom: 15px;
+}
+
+.logo-subheading{
     margin-bottom: 40px;
+    color: $black-15;
+    font-weight: 400;
 }
 
 .search-box-container{
@@ -60,12 +68,11 @@ body{
     width: fit-content;
     margin: 0px auto;
     margin-bottom: 50px;
-    padding: 0px 15px;
-    border-radius: 7px;
+    padding: 0px 20px;
+    border-radius: 3px;
 
     .search-icon{
         height: 18px;
-        cursor: pointer;
         user-select: none;
     }
 
@@ -75,8 +82,8 @@ body{
         outline: none;
         color: $black-90;
         font-size: 15px;
-        padding: 13px 0px;
-        padding-right: 55px;
+        padding: 15px 0px;
+        padding-right: 130px;
 
         &::placeholder{
             color: $black-50;
@@ -95,23 +102,59 @@ body{
     width: 100%;
 
     .movie-card{
-        height: 350px;
-        width: 200px;
+        height: 450px;
+        width: 300px;
         position: relative;
-        filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.1));
-        border-radius: 6px;
-        overflow: hidden;
-        cursor: pointer;
-        transition: filter 0.2s;
+        transition: filter 0.5s, transform 0.5s;
         flex-shrink: 0;
         margin: 18px;
-        perspective: 1000px;
+        perspective: 500px;
+        user-select: none;
 
-        &:hover{
-            filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.2));
+        .side{
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            transform: rotateY(0deg);
+            backface-visibility: hidden;
+            transition: transform $movie-card-transition;
+            transform-style: preserve-3d;
+            border-radius: 6px;
+            overflow: hidden;
+
+            &.back{
+                transform: rotateY(180deg);
+            }
+        }
+
+        &:not(.flipped){
+            cursor: pointer;
+
+            &:hover{
+                filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.15));
+                transform: scale(1.06);
+            }
+        }
+
+        &.flipped{
+
+            .side.back{
+                transform: rotateY(0deg);
+            }
+
+            .side.front{
+                transform: rotateY(-180deg);
+            }
+
+            .card-info{
+                backdrop-filter: blur(10px);
+            }
         }
 
         .bg-img{
+            background-color: #111;
             height: 100%;
             width: 100%;
             background-size: cover;
@@ -124,10 +167,61 @@ body{
             left: 0px;
             width: 100%;
             text-align: left;
-            padding: 10px 15px;
-            background-color: rgba($black-100,0.2);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: linear-gradient(transparent,rgba($black-100,0.9));
+            transition: backdrop-filter $movie-card-transition;
+
+            overflow-y: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            .inner{
+                padding: 12px 15px;
+                padding-top: 60px;
+            }
+
+            img.backdrop{
+                width: 100%;
+            }
+
+            .backdrop-container{
+                position: relative;
+
+                .rating-bubble{
+                    position: absolute;
+                    bottom: 4px;
+                    right: 15px;
+                    transform: translateY(50%);
+                    padding: 5px 10px;
+                    border-radius: 10000px;
+
+                    border: 1px solid rgba($black-70,0.8);
+                    background-color: rgba($black-90,0.6);
+                    color: $black-15;
+                    font-weight: 300;
+                    letter-spacing: 1.2;
+
+                    p{
+                        margin-left: 5px;
+                    }
+
+                }
+            }
+
+            .stream-buttons{
+                margin-top: 12px;
+            }
+
+            &.fullheight{
+                .inner{
+                    padding-top: 12px;
+                }
+                height: 100%;
+                background: rgba($black-100,0.6);
+            }
 
             h2{
                 color: $black-00;
@@ -141,6 +235,16 @@ body{
                 font-weight: 300;
                 font-size: 15px;
             }
+
+            h3.description{
+                font-size: 13px;
+                font-weight: 400;
+                color: $black-20;
+                margin-top: 5px;
+                line-height: 1.4em;
+                font-style: italic;
+            }
+
         }
     }
 }
@@ -168,4 +272,46 @@ body{
 
 .offset-subtitle{
     margin-left: 18px;
+}
+
+.stream-button{
+    background-color: $black-10;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    color: $black-100;
+    font-weight: 500;
+    margin-bottom: 10px;
+
+    p{
+        margin-left: 4px;
+    }
+
+    &:hover{
+        background-color: $black-20;
+        cursor: pointer;
+    }
+}
+
+.loader{
+    margin: 20px auto;
+    display: block;
+    font-size: 1.5em;
+    animation: loader_spin 1s infinite linear;
+}
+
+@keyframes loader_spin{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+p.streaming-unavailable{
+    font-size: 12px;
+    color: $black-30;
+    text-align: center;
+    margin-top: 30px;
 }

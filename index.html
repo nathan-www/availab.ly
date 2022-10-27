@@ -5,6 +5,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"
         integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <title>Availab.ly - Movie availablility checker</title>
     <link rel="stylesheet" href="style/compiled.css">
     <meta name="google" content="notranslate">
@@ -12,45 +13,116 @@
 
 <body>
 
-    <div class="main">
+    <div class="main" id="app">
+
+        <div style="display: none;">
+            {{ streaming_availability }}
+        </div>
+
+
         <img src="assets/film.svg" alt="" class="logo-icon">
         <h1 class="logo-text">Availab.ly</h1>
+        <h4 class="logo-subheading">Find the streaming services for your favourite movies</h4>
 
         <div class="search-box-container flex">
-            <input type="text" placeholder="Search by title...">
+            <input type="text" placeholder="Search by title..." :value="search_text"
+                @input="ev => search(ev)">
             <div class="v-center">
                 <img src="assets/search.svg" alt="" class="search-icon">
             </div>
         </div>
 
-        <div class="flex subtitle offset-subtitle">
+        <div class="flex subtitle offset-subtitle" v-if="search_text.length == 0">
             <div class="v-center">
                 <img src="assets/flame.svg" class="inline-icon" class="inline-icon">
             </div>
             <div class="v-center">
-                <h3>Trending today</h3>
+                <h3>Trending today {{message}}</h3>
+            </div>
+        </div>
+
+        <div class="flex subtitle offset-subtitle" v-else>
+            <div class="v-center">
+                <h3>Results</h3>
             </div>
         </div>
 
         <div class="h100 movie-cards-container">
             <div class="movie-cards flex">
 
-                <div class="movie-card">
-                    <div class="bg-img" style="background-image: url(https://via.placeholder.com/200x350.png)">
-                        <div class="card-info">
-                            <h2>Placeholder movie</h2>
-                            <div class="flex">
-                                <h3 class="year">2013</h3>
+                <template v-for="movie in (search_text.length > 0 ? search_results : trending_movies)">
+
+                    <div :class="{ 'movie-card': true, flipped: active_movie==movie.tmdb_id }" @click="clickMovie(movie.tmdb_id)">
+                        <div class="side front">
+                            <div class="bg-img" :style="{'background-image': 'url(' + movie.poster_img + ')'}">
+                                <div class="card-info">
+                                    <div class="inner">
+                                        <h2>{{ movie.name }}</h2>
+                                        <div class="flex">
+                                            <h3 class="year">{{ movie.release_year }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side back">
+                            <div class="bg-img" :style="{'background-image': 'url(' + movie.poster_img + ')'}">
+                            </div>
+                            <div class="card-info fullheight">
+
+                                <div class="backdrop-container">
+                                    <img :src="movie.backdrop_img" alt="" class="backdrop">
+                                    <div class="rating-bubble flex">
+                                        <div class="v-center">
+                                            <img src="assets/thumbs-up.svg" alt="" class="inline-icon">
+                                        </div>
+                                        <div class="v-center">
+                                            <p>{{ movie.rating }}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="inner">
+                                    <h2>{{ movie.name }}</h2>
+                                    <div class="flex">
+                                        <h3 class="year">{{ movie.release_year }}</h3>
+                                    </div>
+
+                                    <h3 class="description">{{ movie.description }}</h3>
+
+                                    <div class="stream-buttons" v-if="!streaming_availability.hasOwnProperty(movie.tmdb_id)">
+                                        <img src="assets/loader-white.png" alt="" class="inline-icon loader">
+                                    </div>
+
+                                    <div class="stream-buttons" v-else-if="streaming_availability[movie.tmdb_id].length > 0">
+                                        <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]" @click="openLinkNewTab(service.link)">
+                                            <div class="v-center">
+                                                <img src="assets/play.svg" alt="" class="inline-icon">
+                                            </div>
+                                            <div class="v-center">
+                                                <p>Stream on {{ service.platform }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="stream-buttons" v-else>
+                                        <p class="streaming-unavailable">Could not find any streaming services</p>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                </template>
 
             </div>
         </div>
 
         <script src="script/index.js"></script>
         <script src="script/request.js"></script>
+        <script src="script/movies.js"></script>
 </body>
 
 </html>
