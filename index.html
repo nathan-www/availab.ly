@@ -112,7 +112,7 @@
 
                                         </div>
 
-                                        <div class="stream-options-section">
+                                        <div class="stream-options-section" v-if="streaming_availability[movie.tmdb_id]['rent'].length > 0 || streaming_availability[movie.tmdb_id]['buy'].length > 0">
                                             <h5>Alternative options</h5>
 
                                             <div class="stream-button flex" v-for="service in streaming_availability[movie.tmdb_id]['rent']" @click="openLinkNewTab(streaming_availability[movie.tmdb_id].link)">
@@ -131,6 +131,10 @@
                                                     <p>Buy on {{ service.name }}</p>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="stream-options-section" v-if="streaming_availability[movie.tmdb_id]['rent'].length == 0 && streaming_availability[movie.tmdb_id]['stream'].length == 0 && streaming_availability[movie.tmdb_id]['buy'].length == 0 && streaming_availability[movie.tmdb_id]['alt_countries'].length > 0">
+                                            <h5><b>Available in:</b> {{ streaming_availability[movie.tmdb_id]['alt_countries'].map((c) => iso_countries[c]).join(', ') }}</h5>
                                         </div>
 
 
