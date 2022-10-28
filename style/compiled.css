@@ -127,7 +127,7 @@ body {
   backdrop-filter: blur(10px);
 }
 .movie-cards .movie-card .bg-img {
-  background-color: #111;
+  background-color: #1A1919;
   height: 100%;
   width: 100%;
   background-size: cover;
@@ -155,6 +155,7 @@ body {
 }
 .movie-cards .movie-card .card-info img.backdrop {
   width: 100%;
+  min-height: 168px;
 }
 .movie-cards .movie-card .card-info .backdrop-container {
   position: relative;
@@ -181,7 +182,7 @@ body {
 .movie-cards .movie-card .card-info .stream-options-section h5 {
   margin-top: 25px;
   margin-bottom: 10px;
-  color: #fff;
+  color: #FFFFFF;
   font-weight: 400;
   color: #DEDEDE;
 }
